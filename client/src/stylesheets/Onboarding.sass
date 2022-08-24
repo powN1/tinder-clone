@@ -1,0 +1,53 @@
+.onboarding
+  border-top: solid .1rem #dedede
+  padding-top: 2rem
+  h2
+    font-size: 3.2rem
+    font-style: italic
+    text-transform: uppercase
+  section
+    display: flex
+    flex-direction: column
+    padding: 2rem
+    width: 35%
+    text-align: start
+  form
+    label
+      margin: 1rem 0
+      font-size: 1.4rem
+      font-weight: 600
+    display: flex
+    justify-content: center
+    input
+      padding: 1.5rem 2rem
+      margin: 1rem 0
+      font-size: 1.5rem
+      border: solid .2rem rgb(219,219,219)
+      border-radius: 1rem
+    input[type="radio"]
+        display: none
+    input[type="radio"]:checked + label
+      border: solid .2rem rgb(221,39,22)
+    input[type="submit"]:hover
+      background-color: rgb(235,235,235)
+    input[type="submit"]:active
+      background-color: rgb(226,115,155)
+    input[type="number"]
+      width: 15%
+    input::-webkit-outer-spin-button, input::-webkit-inner-spin-button
+      -webkit-appearance: none
+      margin: 0
+    .photo-container img
+      width: 100%
+    .multiple-input-container
+      display: flex
+      input
+        margin-right: 1rem
+      label
+        padding: 1rem
+        border: solid .2rem rgb(144,144,144)
+        border-radius: 1rem
+        transition: all .3s
+        margin-right: 1rem
+      
+  

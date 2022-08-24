@@ -17,7 +17,6 @@ const Home: React.FC = () => {
     <div className="home-overlay">
       <Nav
         minimal={false}
-        authToken={authToken}
         showModal={showModal}
         setShowModal={setShowModal}
         setIsSignUp={setIsSignUp}

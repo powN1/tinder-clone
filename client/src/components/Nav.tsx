@@ -5,7 +5,6 @@ import "../stylesheets/Nav.sass";
 
 interface INavProps {
   minimal: boolean;
-  authToken: boolean;
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   setIsSignUp: React.Dispatch<React.SetStateAction<boolean>>;
@@ -13,11 +12,11 @@ interface INavProps {
 
 const Nav: React.FC<INavProps> = ({
   minimal,
-  authToken,
   showModal,
   setShowModal,
   setIsSignUp,
 }) => {
+  const authToken = true;
   const handleLoginClick = () => {
     setIsSignUp(false);
     setShowModal(true);
