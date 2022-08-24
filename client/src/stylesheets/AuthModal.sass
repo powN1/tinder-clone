@@ -1,0 +1,37 @@
+.auth-modal
+  position: absolute
+  top: 100px
+  left: 50%
+  transform: translateX(-50%)
+  max-width: 360px
+  height: 600px
+  background-color: rgb(255,255,255)
+  border-radius: 1rem
+  padding: 4rem
+  font-size: 1.6rem
+  h2
+    font-style: italic
+  .close-icon
+    cursor: pointer
+  form
+    display: flex
+    flex-direction: column
+  input[type=password], input[type=email]
+    padding: .8rem
+    margin: .8rem
+    font-size: 1.7rem
+  .form-submit-button
+    color: rgb(121,119,119)
+    background-color: rgb(255,255,255)
+    font-weight: 500
+    font-size: 1.5rem
+    text-transform: uppercase
+    padding: 1.2rem 3rem
+    border-radius: 3rem
+    border: solid .2rem rgb(121,119,119)
+    margin: .6rem
+    pointer: cursor
+    transition: .1s all
+    &:hover
+      color: rgb(48,48,48)
+          border: solid .2rem rgb(48,48,48)
