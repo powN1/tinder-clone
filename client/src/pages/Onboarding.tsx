@@ -1,10 +1,16 @@
 import "../stylesheets/Onboarding.sass";
 import Nav from "../components/Nav";
+import axios from "axios";
 import { useState } from "react";
+import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 
 const Onboarding: React.FC = () => {
+  let navigate = useNavigate();
+  const [cookies, setCookie, removeCookie] = useCookies([]);
   const [formData, setFormData] = useState({
-    user_id: "",
+    // @ts-ignore
+    user_id: cookies.UserId,
     first_name: "",
     dob_day: "",
     dob_month: "",
@@ -12,24 +18,30 @@ const Onboarding: React.FC = () => {
     show_gender: false,
     gender: "man",
     gender_interest: "woman",
-    email: "",
     url: "",
     about: "",
     matches: [],
   });
 
-  const handleFormSubmit = () => {
-    console.log("submitted");
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const response = await axios.put("http://localhost:5000/user", {
+        formData,
+      });
+      const success = response.status === 200;
+      if (success) navigate("/dashboard");
+    } catch (err) {
+      console.log(err);
+    }
   };
   const handleInputsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value =
       e.target.type === "checkbox" ? e.target.checked : e.target.value;
     const name = e.target.name;
-    console.log(name, value);
 
     setFormData((prevState) => ({ ...prevState, [name]: value }));
   };
-  console.log(formData);
   return (
     <>
       <Nav
@@ -40,7 +52,7 @@ const Onboarding: React.FC = () => {
       />
       <div className="onboarding">
         <h2>Create account</h2>
-        <form onSubmit={handleFormSubmit}>
+        <form onSubmit={(e) => handleFormSubmit(e)}>
           <section>
             <label htmlFor="first_name">First Name</label>
             <input
@@ -176,7 +188,9 @@ const Onboarding: React.FC = () => {
               required={true}
             />
             <div className="photo-container">
-              <img src={formData.url} alt="profile pic preview" />
+              {formData.url && (
+                <img src={formData.url} alt="profile pic preview" />
+              )}
             </div>
           </section>
         </form>

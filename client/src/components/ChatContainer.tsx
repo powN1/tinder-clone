@@ -4,15 +4,20 @@ import ChatHeader from "../components/ChatHeader";
 import MatchesDisplay from "../components/MatchesDisplay";
 import ChatDisplay from "../components/ChatDisplay";
 
-const ChatContainer: React.FC = () => {
+interface ChatContainerProps {
+  user: {};
+}
+
+const ChatContainer: React.FC<ChatContainerProps> = ({ user }) => {
   return (
     <div className="chat-container">
-      <ChatHeader />
+      <ChatHeader user={user} />
       <div>
         <button className="option">Matches</button>
         <button className="option">Chat</button>
       </div>
-      <MatchesDisplay />
+      {/* @ts-ignore */}
+      <MatchesDisplay matches={user.matches} />
       <ChatDisplay />
     </div>
   );

@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import "../stylesheets/AuthModal.sass";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
 
 interface IAuthModalProps {
   isSignUp: boolean;
@@ -11,18 +14,40 @@ const AuthModal: React.FC<IAuthModalProps> = ({ isSignUp, setShowModal }) => {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const [cookies, setCookie, removeCookie] = useCookies([]);
+
+  let navigate = useNavigate();
 
   const handleClick = () => {
     setShowModal(false);
   };
 
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     try {
       if (isSignUp && password !== confirmPassword) {
         setError("Passwords need to match!");
+        return;
       }
-      console.log("Make a post request to the db");
+      const response = await axios.post(
+        `http://localhost:5000/${isSignUp ? "signup" : "login"}`,
+        {
+          email,
+          password,
+        }
+      );
+      console.log(response);
+      // @ts-ignore
+      setCookie("AuthToken", response.data.token);
+      // @ts-ignore
+      setCookie("UserId", response.data.userId);
+
+      const success = response.status === 201;
+      if (success && isSignUp) navigate("/onboarding");
+      if (success && !isSignUp) navigate("/dashboard");
+
+      window.location.reload();
     } catch (err) {
       console.error(err);
     }
@@ -64,7 +89,7 @@ const AuthModal: React.FC<IAuthModalProps> = ({ isSignUp, setShowModal }) => {
             name="password-check"
             placeholder="confirm password"
             required={true}
-            value={password}
+            value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
         )}

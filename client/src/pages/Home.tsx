@@ -1,5 +1,5 @@
 import "../stylesheets/Home.sass";
-import { useState } from "react";
+import React, { useState } from "react";
 import Nav from "../components/Nav";
 import AuthModal from "../components/AuthModal";
 

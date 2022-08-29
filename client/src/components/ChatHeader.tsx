@@ -1,16 +1,34 @@
 import React from "react";
 import "../stylesheets/ChatHeader.sass";
+import { useCookies } from "react-cookie";
 
-const ChatHeader = () => {
+interface ChatHeaderProps {
+  user: {};
+}
+
+const ChatHeader: React.FC<ChatHeaderProps> = ({ user }) => {
+  const [cookies, setCookie, removeCookie] = useCookies(["user"]);
+
+  const logoutUser = () => {
+    // @ts-ignore
+    removeCookie("UserId", cookies.UserId);
+    // @ts-ignore
+    removeCookie("AuthToken", cookies.AuthToken);
+    window.location.reload();
+  };
   return (
     <div className="chat-container-header">
       <div className="profile">
         <div className="img-container">
-          <img src="" alt="user profile pic" />
+          {/* @ts-ignore */}
+          <img src={user.url} alt={user.first_name + "profile pic"} />
         </div>
-        <h3>UserName</h3>
+        {/* @ts-ignore */}
+        <h3>{user.first_name}</h3>
       </div>
-      <i className="log-out-icon">⇦</i>
+      <i className="log-out-icon" onClick={logoutUser}>
+        ⇦
+      </i>
     </div>
   );
 };

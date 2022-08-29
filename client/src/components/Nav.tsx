@@ -16,7 +16,7 @@ const Nav: React.FC<INavProps> = ({
   setShowModal,
   setIsSignUp,
 }) => {
-  const authToken = true;
+  const authToken = false;
   const handleLoginClick = () => {
     setIsSignUp(false);
     setShowModal(true);
