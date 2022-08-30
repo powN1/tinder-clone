@@ -1,20 +1,21 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
+import "../stylesheets/MatchesDisplay.sass";
 
 interface MatchesDisplayProps {
   matches: [];
+  setClickedUser: React.Dispatch<React.SetStateAction<{}>>;
 }
 
-const MatchesDisplay: React.FC<MatchesDisplayProps> = ({ matches }) => {
+const MatchesDisplay: React.FC<MatchesDisplayProps> = ({
+  matches,
+  setClickedUser,
+}) => {
   const [matchedProfiles, setMatchedProfiles] = useState([]);
 
   const matchedUserIds = useRef([]);
 
   const getMatches = async () => {
-    if (typeof matchedUserIds.current === "undefined") {
-      return console.log(`pusty obiekt ${matchedUserIds.current}`);
-    }
-    console.log(`Niepusty obiekt ${matchedUserIds.current}`);
     try {
       const response = await axios.get("http://localhost:5000/users", {
         params: { userIds: JSON.stringify(matchedUserIds.current) },
@@ -30,10 +31,25 @@ const MatchesDisplay: React.FC<MatchesDisplayProps> = ({ matches }) => {
       matchedUserIds.current = matches.map(({ user_id }) => user_id);
       getMatches();
     }
-    console.log(matches, matchedUserIds.current);
   }, [matches]);
-
-  return <div className="matches-display"></div>;
+  return (
+    <div className="matches-display">
+      {matchedProfiles?.map((match, i) => (
+        <div
+          key={i}
+          className="match-card"
+          onClick={() => setClickedUser(match)}
+        >
+          <div className="img-container">
+            {/* @ts-ignore */}
+            <img src={match?.url} alt={match?.first_name + "profile"} />
+          </div>
+          {/* @ts-ignore */}
+          <h3>{match?.first_name}</h3>
+        </div>
+      ))}
+    </div>
+  );
 };
 
 export default MatchesDisplay;

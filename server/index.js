@@ -71,7 +71,24 @@ app.get("/gendered-users", async (req, res) => {
     await client.close();
   }
 });
+app.get("/messages", async (req, res) => {
+  const client = new MongoClient(uri);
+  const { userId, correspondingUserId } = req.query;
+  console.log(userId, correspondingUserId);
 
+  try {
+    await client.connect();
+    const database = client.db("app-data");
+    const messages = database.collection("messages");
+
+    const query = { from_userId: userId, to_userId: correspondingUserId };
+
+    const foundMessages = await messages.find(query).toArray();
+    res.send(foundMessages);
+  } finally {
+    await client.close();
+  }
+});
 app.post("/signup", async (req, res) => {
   const client = new MongoClient(uri);
   const { email, password } = req.body;
@@ -131,6 +148,23 @@ app.post("/login", async (req, res) => {
     res.status(400).send("Invalid credentials.");
   } catch (err) {
     console.log(err);
+  } finally {
+    await client.close();
+  }
+});
+app.post("/message", async (req, res) => {
+  const client = new MongoClient(uri);
+  const message = req.body.message;
+  try {
+    await client.connect();
+    const database = client.db("app-data");
+    const messages = database.collection("messages");
+    const insertedMessage = await messages.insertOne(message);
+    res.send(insertedMessage);
+  } catch (err) {
+    console.log(err);
+  } finally {
+    await client.close();
   }
 });
 

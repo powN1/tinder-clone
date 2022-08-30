@@ -1,13 +1,91 @@
-import React from "react";
+// @ts-nocheck
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import Chat from "../components/Chat";
 import ChatInput from "../components/ChatInput";
 import "../stylesheets/ChatDisplay.sass";
 
-const ChatDisplay: React.FC = () => {
+interface ChatDisplayProps {
+  user: {};
+  clickedUser: {};
+}
+
+const ChatDisplay: React.FC<ChatDisplayProps> = ({ user, clickedUser }) => {
+  const [usersMessages, setUsersMessages] = useState(null);
+  const [clickedUsersMessages, setClickedUsersMessages] = useState(null);
+  // @ts-ignore
+  const userId = user?.user_id;
+  // @ts-ignore
+  const clickedUserId = clickedUser?.user_id;
+
+  const getUsersMessages = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/messages", {
+        params: { userId: userId, correspondingUserId: clickedUserId },
+      });
+      setUsersMessages(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const getClickedUsersMessages = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/messages", {
+        params: { userId: clickedUserId, correspondingUserId: userId },
+      });
+      setClickedUsersMessages(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getUsersMessages();
+    getClickedUsersMessages();
+  }, []);
+  useEffect(() => {
+    if (usersMessages !== null) {
+      return;
+    } else {
+      getUsersMessages();
+      getClickedUsersMessages();
+    }
+  }, [usersMessages, clickedUsersMessages]);
+
+  const messages = [];
+
+  usersMessages?.forEach((message) => {
+    const formattedMessage = {};
+    formattedMessage["name"] = user?.first_name;
+    formattedMessage["img"] = user?.url;
+    formattedMessage["message"] = message.message;
+    formattedMessage["timestamp"] = message.timestamp;
+    formattedMessage["userId"] = user?.user_id;
+    messages.push(formattedMessage);
+  });
+  clickedUsersMessages?.forEach((message) => {
+    const formattedMessage = {};
+    formattedMessage["name"] = clickedUser?.first_name;
+    formattedMessage["img"] = clickedUser?.url;
+    formattedMessage["message"] = message.message;
+    formattedMessage["timestamp"] = message.timestamp;
+    formattedMessage["clickedUserId"] = clickedUser?.user_id;
+
+    messages.push(formattedMessage);
+  });
+  const descendingOrderMessages = messages?.sort((a, b) =>
+    a.timestamp.localeCompare(b.timestamp)
+  );
+  console.log(descendingOrderMessages);
   return (
     <>
-      <Chat />
-      <ChatInput />
+      <Chat descendingOrderMessages={descendingOrderMessages} />
+      <ChatInput
+        user={user}
+        clickedUser={clickedUser}
+        getUsersMessages={getUsersMessages}
+        getClickedUsersMessages={getClickedUsersMessages}
+      />
     </>
   );
 };
